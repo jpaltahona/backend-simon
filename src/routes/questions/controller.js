@@ -1,7 +1,6 @@
 import modelRespueta from '../../schemas/respuestas';
 import componentsSchema  from '../../schemas/components_responses_responses';
-import { ObjectId } from 'mongoose';
-import mongo from 'mongo';
+
 
 export const saveQuestios = async (req, res) => {
   try {
@@ -30,7 +29,8 @@ export const saveQuestios = async (req, res) => {
     }
    
     let obj = {
-      estudiante, 
+      estudiante: estudiante.id,
+      studentName: estudiante.name,
       docente,
       respuestas: listResponseSave
     };
@@ -67,3 +67,5 @@ export const getResponseTeacher = async(req, res) => {
   
   res.status(200).json(returnResponses)
 }
+
+

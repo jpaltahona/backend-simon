@@ -9,8 +9,12 @@ const respuestasSchema = new Schema({
     type: String,
     require: true
   },
-  respuestas: []
-  
+  respuestas: [],
+  fecha: {
+    type: Date,
+    require: false,
+    default: Date.now()
+  }
 });
 
 export default model('respuestas', respuestasSchema );
