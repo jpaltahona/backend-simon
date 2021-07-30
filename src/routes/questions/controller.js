@@ -2,21 +2,33 @@ import modelRespueta from '../../schemas/respuestas';
 import componentsSchema  from '../../schemas/components_responses_responses';
 
 
+function calculateScore(one, two){
+  const formula = (one * two) / 100 ;
+  return formula
+}
+
 export const saveQuestios = async (req, res) => {
   try {
     const {estudiante, docente, responses  } = req.body;
-   
+    
     let saveQuestions = [];
+    let count = 0;
      for (const item of responses) {
-     
        let objResponde = {
           pregunta: item.question ? item.question : '',
           respuesta: item.value.toString(),
           type: item.type ? item.type : ''
        }
+       if(item.score){
+         if(item.score > 0) {
+          let valueTwo = typeof item.value == "string" ? item.value.split("%")[0] : 0;
+          const result = calculateScore( item.score, parseInt(valueTwo) );
+          count = count + result;
+         }
+       }
        saveQuestions.push(objResponde);
      }
-
+    const finalCount = calculateScore( 5.0, Math.round(count) )
     let saveQuestionResults = await componentsSchema.insertMany(saveQuestions)
      let listResponseSave = [];
 
@@ -32,7 +44,8 @@ export const saveQuestios = async (req, res) => {
       estudiante: estudiante.id,
       studentName: estudiante.name,
       docente,
-      respuestas: listResponseSave
+      respuestas: listResponseSave, 
+      score: finalCount
     };
     const saveQuestionFinal = new modelRespueta(obj);
     await saveQuestionFinal.save()
@@ -42,7 +55,6 @@ export const saveQuestios = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error)
     res.status(400).json({
       message: 'Error al guardar'
     })

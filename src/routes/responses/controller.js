@@ -1,6 +1,11 @@
 import modelRespueta from '../../schemas/respuestas';
 import componentsSchema  from '../../schemas/components_responses_responses';
-import {getDataUser} from '../../logic/getStudent';
+
+function calculateScore(one, two){
+  const formula = (one * two) / 100 ;
+  return formula
+}
+
 
 export const getResponseTeacher = async(req, res) => {
   const id = req.params.id;
@@ -16,8 +21,17 @@ export const getResponseTeacher = async(req, res) => {
     i.respuestas = respuestas;
     returnResponses.push(i);
   };
+  let score = 0;
+  returnResponses.map( i => {
+    score = score + i.score;
+  })
+  let repsonsesCal = score / returnResponses.length;
 
-  res.status(200).json(returnResponses)
+  console.log(repsonsesCal);
+  res.status(200).json({
+    responses: returnResponses,
+    scoreGlobal: repsonsesCal
+  })
 }
 
 

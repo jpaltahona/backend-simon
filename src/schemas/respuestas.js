@@ -14,7 +14,8 @@ const respuestasSchema = new Schema({
     type: Date,
     require: false,
     default: Date.now()
-  }
+  },
+  score: Number
 });
 
 export default model('respuestas', respuestasSchema );
