@@ -9,6 +9,7 @@ function calculateScore(one, two){
 
 export const getResponseTeacher = async(req, res) => {
   const id = req.params.id;
+  console.log(id);
   const teacherData = await modelRespueta.find({ docente: id });
 
   let returnResponses = [];
@@ -30,8 +31,28 @@ export const getResponseTeacher = async(req, res) => {
   console.log(repsonsesCal);
   res.status(200).json({
     responses: returnResponses,
-    scoreGlobal: repsonsesCal
+    scoreGlobal: repsonsesCal,
+    docente: id
   })
+};
+
+export const getAllTeacher = async (req, res) => {
+  const { teacher } = req.body;
+  const teacherData = await modelRespueta.find( { docente: { '$in' : teacher } } );
+  let totalItem = [];
+
+  if(teacherData){
+    for (const item of teacherData) {
+      console.log(item);
+      let arrayIds = [];
+      for await (let e of item.respuestas) {
+        arrayIds.push(e.ref);
+      }
+      const respuestas = await componentsSchema.find({ "_id": { $in: arrayIds } });
+      item.respuestas = respuestas;
+      totalItem.push(item.docente);
+    }
+  }
+
+  res.status(200).json(totalItem);
 }
-
-
