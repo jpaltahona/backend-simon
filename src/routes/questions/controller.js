@@ -9,8 +9,10 @@ function calculateScore(one, two){
 
 export const saveQuestios = async (req, res) => {
   try {
-    const {estudiante, docente, responses  } = req.body;
-    
+    console.log( req.body);
+  
+    const {estudiante, docente, responses, semestre, grupo, programa, curso, teacherName} = req.body;
+
     let saveQuestions = [];
     let count = 0;
      for (const item of responses) {
@@ -45,7 +47,12 @@ export const saveQuestios = async (req, res) => {
       studentName: estudiante.name,
       docente,
       respuestas: listResponseSave, 
-      score: finalCount
+      score: finalCount,
+      semestre,
+      grupo,
+      programa,
+      curso,
+      teacherName
     };
     const saveQuestionFinal = new modelRespueta(obj);
     await saveQuestionFinal.save()

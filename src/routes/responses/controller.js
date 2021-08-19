@@ -28,12 +28,12 @@ export const getResponseTeacher = async(req, res) => {
   })
   let repsonsesCal = score / returnResponses.length;
 
-  console.log(repsonsesCal);
   res.status(200).json({
     responses: returnResponses,
     scoreGlobal: repsonsesCal,
     docente: id
   })
+  
 };
 
 export const getAllTeacher = async (req, res) => {

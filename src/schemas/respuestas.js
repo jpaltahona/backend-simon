@@ -15,7 +15,13 @@ const respuestasSchema = new Schema({
     require: false,
     default: Date.now()
   },
-  score: Number
+  score: Number,
+  studentName: String,
+  semestre: String,
+  grupo: String,
+  programa: String,
+  curso: String,
+  teacherName: String,
 });
 
 export default model('respuestas', respuestasSchema );
