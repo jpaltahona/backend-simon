@@ -8,16 +8,35 @@ function calculateScore(one, two){
   return formula
 }
 
+
+const functionsCall = (arr) => {
+  let val = 0;
+  arr.forEach( i => {
+    val = val + i;
+  });
+  let repsonsesCal = val / arr.length;
+  return repsonsesCal + "%";
+}
+
 const getDuplicateElement = (array) => {
   let filteredCategories = [];
   array.forEach(item => {
     if( item.type == "question.slider" ) {
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
-      console.log(arrayRepetidos);
-    }
+      let arrCall =  [  parseInt(item.respuesta), parseInt(arrayRepetidos[0].respuesta) ]
+      filteredCategories.push({
+        [item.pregunta]: functionsCall(arrCall)
+      })
+    }else if( item.type == "question.chips" ){
+      const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
+      let arrayChips = arrayRepetidos[0].respuesta.split(",");
+      let arrayChipsTwo = item.respuesta.split(",");
+      let allArray = [...arrayChips, ...arrayChipsTwo];
+      console.log(allArray);
+      console.log("chips ->", arrayRepetidos);
+    };
   })
-
-  console.log( "duplicados -> " ,filteredCategories);
+  return filteredCategories;
 };
 
 
@@ -45,11 +64,12 @@ export const getResponseTeacher = async(req, res) => {
   })
   let repsonsesCal = score / returnResponses.length;
 
-  getDuplicateElement(allArrayResponse);
+  const valuesTendece = getDuplicateElement(allArrayResponse);
 
   res.status(200).json({
     responses: returnResponses,
     scoreGlobal: repsonsesCal,
+    moda: valuesTendece,
     docente: id
   })
   
@@ -57,6 +77,7 @@ export const getResponseTeacher = async(req, res) => {
 export const getAllTeacher = async (req, res) => {
   const { teacher } = req.body;
   const teacherData = await modelRespueta.find( { docente: { '$in' : teacher } } );
+
   let totalItem = [];
 
   if(teacherData){
