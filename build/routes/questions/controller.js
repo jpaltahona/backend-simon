@@ -9,10 +9,6 @@ var _respuestas = _interopRequireDefault(require("../../schemas/respuestas"));
 
 var _components_responses_responses = _interopRequireDefault(require("../../schemas/components_responses_responses"));
 
-var _mongoose = require("mongoose");
-
-var _mongo = _interopRequireDefault(require("mongo"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
@@ -27,17 +23,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 function _asyncIterator(iterable) { var method; if (typeof Symbol !== "undefined") { if (Symbol.asyncIterator) method = iterable[Symbol.asyncIterator]; if (method == null && Symbol.iterator) method = iterable[Symbol.iterator]; } if (method == null) method = iterable["@@asyncIterator"]; if (method == null) method = iterable["@@iterator"]; if (method == null) throw new TypeError("Object is not async iterable"); return method.call(iterable); }
 
+function calculateScore(one, two) {
+  var formula = one * two / 100;
+  return formula;
+}
+
 var saveQuestios = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-    var _req$body, estudiante, docente, responses, saveQuestions, _iterator3, _step3, item, objResponde, saveQuestionResults, listResponseSave, _iterator4, _step4, _item, obj, saveQuestionFinal;
+    var _req$body, estudiante, docente, responses, semestre, grupo, programa, curso, teacherName, saveQuestions, count, _iterator3, _step3, item, objResponde, valueTwo, result, finalCount, saveQuestionResults, listResponseSave, _iterator4, _step4, _item, obj, saveQuestionFinal;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            _req$body = req.body, estudiante = _req$body.estudiante, docente = _req$body.docente, responses = _req$body.responses;
+            console.log(req.body);
+            _req$body = req.body, estudiante = _req$body.estudiante, docente = _req$body.docente, responses = _req$body.responses, semestre = _req$body.semestre, grupo = _req$body.grupo, programa = _req$body.programa, curso = _req$body.curso, teacherName = _req$body.teacherName;
             saveQuestions = [];
+            count = 0;
             _iterator3 = _createForOfIteratorHelper(responses);
 
             try {
@@ -48,6 +51,15 @@ var saveQuestios = /*#__PURE__*/function () {
                   respuesta: item.value.toString(),
                   type: item.type ? item.type : ''
                 };
+
+                if (item.score) {
+                  if (item.score > 0) {
+                    valueTwo = typeof item.value == "string" ? item.value.split("%")[0] : 0;
+                    result = calculateScore(item.score, parseInt(valueTwo));
+                    count = count + result;
+                  }
+                }
+
                 saveQuestions.push(objResponde);
               }
             } catch (err) {
@@ -56,10 +68,11 @@ var saveQuestios = /*#__PURE__*/function () {
               _iterator3.f();
             }
 
-            _context.next = 7;
+            finalCount = calculateScore(5.0, Math.round(count));
+            _context.next = 10;
             return _components_responses_responses["default"].insertMany(saveQuestions);
 
-          case 7:
+          case 10:
             saveQuestionResults = _context.sent;
             listResponseSave = [];
             _iterator4 = _createForOfIteratorHelper(saveQuestionResults);
@@ -79,35 +92,41 @@ var saveQuestios = /*#__PURE__*/function () {
             }
 
             obj = {
-              estudiante: estudiante,
+              estudiante: estudiante.id,
+              studentName: estudiante.name,
               docente: docente,
-              respuestas: listResponseSave
+              respuestas: listResponseSave,
+              score: finalCount,
+              semestre: semestre,
+              grupo: grupo,
+              programa: programa,
+              curso: curso,
+              teacherName: teacherName
             };
             saveQuestionFinal = new _respuestas["default"](obj);
-            _context.next = 15;
+            _context.next = 18;
             return saveQuestionFinal.save();
 
-          case 15:
+          case 18:
             res.status(200).json({
               message: 'save response'
             });
-            _context.next = 22;
+            _context.next = 24;
             break;
 
-          case 18:
-            _context.prev = 18;
+          case 21:
+            _context.prev = 21;
             _context.t0 = _context["catch"](0);
-            console.log(_context.t0);
             res.status(400).json({
               message: 'Error al guardar'
             });
 
-          case 22:
+          case 24:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 18]]);
+    }, _callee, null, [[0, 21]]);
   }));
 
   return function saveQuestios(_x, _x2) {

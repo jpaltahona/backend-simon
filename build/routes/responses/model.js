@@ -22,13 +22,7 @@ var respuestasSchema = new _mongoose.Schema({
     require: false,
     "default": Date.now()
   },
-  score: Number,
-  studentName: String,
-  semestre: String,
-  grupo: String,
-  programa: String,
-  curso: String,
-  teacherName: String
+  score: Number
 });
 
 var _default = (0, _mongoose.model)('respuestas', respuestasSchema);
