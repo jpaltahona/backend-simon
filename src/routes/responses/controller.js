@@ -18,8 +18,11 @@ const functionsCall = (arr) => {
   return repsonsesCal + "%";
 }
 
+
+
 const getDuplicateElement = (array) => {
   let filteredCategories = [];
+  let aspectos = {};
   array.forEach(item => {
     if( item.type == "question.slider" ) {
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
@@ -29,14 +32,30 @@ const getDuplicateElement = (array) => {
       })
     }else if( item.type == "question.chips" ){
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
-      let arrayChips = arrayRepetidos[0].respuesta.split(",");
+
+      let arrayChips = arrayRepetidos.map( elemtn => elemtn.respuesta.split(",") );
+      
       let arrayChipsTwo = item.respuesta.split(",");
       let allArray = [...arrayChips, ...arrayChipsTwo];
-      console.log(allArray);
-      console.log("chips ->", arrayRepetidos);
+
+      const busqueda = allArray.reduce((acc, persona) => {
+        acc[persona] = ++acc[persona] || 0;
+        return acc;
+      }, {});
+      let obj ={
+        [item.pregunta]: busqueda
+      };
+      aspectos = {
+        ...aspectos,
+        ...obj
+      } 
+      console.log("chips ->", obj);
     };
   })
-  return filteredCategories;
+  return {
+    modas: filteredCategories,
+    aspectos
+  }
 };
 
 
@@ -69,7 +88,7 @@ export const getResponseTeacher = async(req, res) => {
   res.status(200).json({
     responses: returnResponses,
     scoreGlobal: repsonsesCal,
-    moda: valuesTendece,
+    valuesTendece,
     docente: id
   })
   
