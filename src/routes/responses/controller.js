@@ -23,7 +23,7 @@ const functionsCall = (arr) => {
 const getDuplicateElement = (array) => {
   let filteredCategories = [];
   let aspectos = {};
-  array.forEach(item => {
+  array.forEach((item) => {
     if( item.type == "question.slider" ) {
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
       let arrCall =  [  parseInt(item.respuesta), parseInt(arrayRepetidos[0].respuesta) ]
@@ -34,22 +34,22 @@ const getDuplicateElement = (array) => {
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
 
       let arrayChips = arrayRepetidos.map( elemtn => elemtn.respuesta.split(",") );
-      
+
       let arrayChipsTwo = item.respuesta.split(",");
-      let allArray = [...arrayChips, ...arrayChipsTwo];
+      let allArray = [ ...arrayChips[0], ...arrayChipsTwo];
 
       const busqueda = allArray.reduce((acc, persona) => {
         acc[persona] = ++acc[persona] || 0;
         return acc;
       }, {});
-      let obj ={
+    
+      let obj ={ 
         [item.pregunta]: busqueda
       };
       aspectos = {
         ...aspectos,
         ...obj
-      } 
-      console.log("chips ->", obj);
+      }
     };
   })
   return {
