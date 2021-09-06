@@ -60,38 +60,45 @@ const getDuplicateElement = (array) => {
 
 
 export const getResponseTeacher = async(req, res) => {
-  const id = req.params.id;
-  const teacherData = await modelRespueta.find({ docente: id });
+  try {
+    const id = req.params.id;
+    const teacherData = await modelRespueta.find({ docente: id });
+    console.log(teacherData.length);
+    if(teacherData.length >= 1){
+      let returnResponses = [];
+      for await (let i of teacherData) {
+        let arrayIds = [];
+          for await (let e of i.respuestas) {
+            arrayIds.push(e.ref);
+          }
+        const respuestas = await componentsSchema.find({ "_id": { $in: arrayIds } });
+        i.respuestas = respuestas;
+        returnResponses.push(i);
+      };
+      let score = 0;
+      let allArrayResponse = [];
 
-  let returnResponses = [];
-  for await (let i of teacherData) {
-    let arrayIds = [];
-      for await (let e of i.respuestas) {
-        arrayIds.push(e.ref);
-      }
-    const respuestas = await componentsSchema.find({ "_id": { $in: arrayIds } });
-    i.respuestas = respuestas;
-    returnResponses.push(i);
-  };
-  let score = 0;
-  let allArrayResponse = [];
+      returnResponses.map( i => {
+        score = score + i.score;
+        allArrayResponse.push(...i.respuestas);
 
-  returnResponses.map( i => {
-    score = score + i.score;
-    allArrayResponse.push(...i.respuestas);
+      })
+      let repsonsesCal = score / returnResponses.length;
 
-  })
-  let repsonsesCal = score / returnResponses.length;
+      const valuesTendece = getDuplicateElement(allArrayResponse);
 
-  const valuesTendece = getDuplicateElement(allArrayResponse);
-
-  res.status(200).json({
-    responses: returnResponses,
-    scoreGlobal: repsonsesCal,
-    valuesTendece,
-    docente: id
-  })
-  
+      res.status(200).json({
+        responses: returnResponses,
+        scoreGlobal: repsonsesCal,
+        valuesTendece,
+        docente: id
+      })
+    }else{
+      res.status(400).send('user not found');
+    }
+  } catch (error) {
+    res.status(400).send('user not found');
+  }
 };
 export const getAllTeacher = async (req, res) => {
   const { teacher } = req.body;
