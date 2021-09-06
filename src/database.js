@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-mongoose.connect("mongodb+srv://admin:admin123simonBolivar@cluster0.pqjbd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+mongoose.connect("mongodb://localhost/encueta", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,

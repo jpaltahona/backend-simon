@@ -15,6 +15,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -27,9 +35,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _asyncIterator(iterable) { var method; if (typeof Symbol !== "undefined") { if (Symbol.asyncIterator) method = iterable[Symbol.asyncIterator]; if (method == null && Symbol.iterator) method = iterable[Symbol.iterator]; } if (method == null) method = iterable["@@asyncIterator"]; if (method == null) method = iterable["@@iterator"]; if (method == null) throw new TypeError("Object is not async iterable"); return method.call(iterable); }
 
@@ -38,22 +44,58 @@ function calculateScore(one, two) {
   return formula;
 }
 
+var functionsCall = function functionsCall(arr) {
+  var val = 0;
+  arr.forEach(function (i) {
+    val = val + i;
+  });
+  var repsonsesCal = val / arr.length;
+  return repsonsesCal + "%";
+};
+
 var getDuplicateElement = function getDuplicateElement(array) {
   var filteredCategories = [];
+  var aspectos = {};
   array.forEach(function (item) {
     if (item.type == "question.slider") {
       var arrayRepetidos = array.filter(function (i) {
         return i.pregunta == item.pregunta;
       });
-      console.log(arrayRepetidos);
+      var arrCall = [parseInt(item.respuesta), parseInt(arrayRepetidos[0].respuesta)];
+      filteredCategories.push(_defineProperty({}, item.pregunta, functionsCall(arrCall)));
+    } else if (item.type == "question.chips") {
+      var _arrayRepetidos = array.filter(function (i) {
+        return i.pregunta == item.pregunta;
+      });
+
+      var arrayChips = _arrayRepetidos.map(function (elemtn) {
+        return elemtn.respuesta.split(",");
+      });
+
+      var arrayChipsTwo = item.respuesta.split(",");
+      var allArray = [].concat(_toConsumableArray(arrayChips), _toConsumableArray(arrayChipsTwo));
+      var busqueda = allArray.reduce(function (acc, persona) {
+        acc[persona] = ++acc[persona] || 0;
+        return acc;
+      }, {});
+
+      var obj = _defineProperty({}, item.pregunta, busqueda);
+
+      aspectos = _objectSpread(_objectSpread({}, aspectos), obj);
+      console.log("chips ->", obj);
     }
+
+    ;
   });
-  console.log("duplicados -> ", filteredCategories);
+  return {
+    modas: filteredCategories,
+    aspectos: aspectos
+  };
 };
 
 var getResponseTeacher = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
-    var id, teacherData, returnResponses, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _value, i, arrayIds, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, _value2, e, respuestas, score, allArrayResponse, repsonsesCal;
+    var id, teacherData, returnResponses, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _value, i, arrayIds, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, _value2, e, respuestas, score, allArrayResponse, repsonsesCal, valuesTendece;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -227,10 +269,11 @@ var getResponseTeacher = /*#__PURE__*/function () {
               allArrayResponse.push.apply(allArrayResponse, _toConsumableArray(i.respuestas));
             });
             repsonsesCal = score / returnResponses.length;
-            getDuplicateElement(allArrayResponse);
+            valuesTendece = getDuplicateElement(allArrayResponse);
             res.status(200).json({
               responses: returnResponses,
               scoreGlobal: repsonsesCal,
+              valuesTendece: valuesTendece,
               docente: id
             });
 

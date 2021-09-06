@@ -4,7 +4,7 @@ var _mongoose = _interopRequireDefault(require("mongoose"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-_mongoose["default"].connect("mongodb+srv://admin:admin123simonBolivar@cluster0.pqjbd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+_mongoose["default"].connect("mongodb://localhost/encueta", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
