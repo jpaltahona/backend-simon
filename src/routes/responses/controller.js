@@ -39,10 +39,12 @@ const getDuplicateElement = (array) => {
       let allArray = [ ...arrayChips[0], ...arrayChipsTwo];
 
       const busqueda = allArray.reduce((acc, persona) => {
-        acc[persona] = ++acc[persona] || 0;
+        let res = (++acc[persona] || 0 ) * 100 ;
+        acc[persona] = res.toString();
+  
         return acc;
       }, {});
-    
+
       let obj ={ 
         [item.pregunta]: busqueda
       };
@@ -63,7 +65,7 @@ export const getResponseTeacher = async(req, res) => {
   try {
     const id = req.params.id;
     const teacherData = await modelRespueta.find({ docente: id });
-    console.log(teacherData.length);
+  
     if(teacherData.length >= 1){
       let returnResponses = [];
       for await (let i of teacherData) {
