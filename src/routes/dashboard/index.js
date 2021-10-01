@@ -1,8 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import { getResponseTeacher, getAllTeacher } from './controller';
-
+import { getFiltersTeachers, getAllTeacher } from './controller';
 
 router.get('/allTeachers', getAllTeacher );
+router.post('/filters', getFiltersTeachers);
 
 export default router;

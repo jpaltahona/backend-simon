@@ -104,7 +104,6 @@ export const getResponseTeacher = async(req, res) => {
 };
 export const getAllTeacher = async (req, res) => {
   const teacherData = await modelRespueta.find({});
-  console.log(teacherData)
   let totalItem = [];
   let totalStudents = [];
 
@@ -117,6 +116,7 @@ export const getAllTeacher = async (req, res) => {
   const dataStuden = new Set(totalStudents);
 
   let result = [...dataArr];
+  let resultStruden = [...dataStuden];
   
   res.status(200).json({
     totalTeacher: {
@@ -124,8 +124,25 @@ export const getAllTeacher = async (req, res) => {
       total: result.length
     },
     totalStudent: {
-      list: dataStuden,
-      total: dataStuden.length
+      list: resultStruden,
+      total: resultStruden.length
     }
   });
 }
+
+export const getFiltersTeachers = async(req, res) => {
+  try {
+    const dataBody = req.body;
+    let objQuer ={};
+    
+    Object.keys(dataBody).map( i => {
+      objQuer[i] = dataBody[i].replaceAll(' ', '-');
+    });
+
+    const data = await modelRespueta.find(objQuer);
+    res.status(200).json(data);
+  
+  } catch (error) {''
+    res.status(400).send(error);
+  }
+} 
