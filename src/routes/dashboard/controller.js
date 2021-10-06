@@ -1,7 +1,8 @@
 import modelRespueta from '../../schemas/respuestas';
 import componentsSchema  from '../../schemas/components_responses_responses';
 import { deleteDuplicate } from '../../logic/arrayMetoh';
-
+import { createExcel } from '../../logic/createExcel';
+import { restart } from 'nodemon';
 
 function calculateScore(one, two){
   const formula = (one * two) / 100 ;
@@ -146,3 +147,12 @@ export const getFiltersTeachers = async(req, res) => {
     res.status(400).send(error);
   }
 } 
+
+export const exportData = async(req, res) => {
+  createExcel();
+
+  res.status(200).json({
+    data: '1233'
+  });
+  
+}
