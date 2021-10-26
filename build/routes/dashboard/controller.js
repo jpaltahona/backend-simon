@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getAllTeacher = exports.getResponseTeacher = void 0;
+exports.exportData = exports.getFiltersTeachers = exports.getAllTeacher = exports.getResponseTeacher = void 0;
 
 var _respuestas = _interopRequireDefault(require("../../schemas/respuestas"));
 
@@ -11,9 +11,11 @@ var _components_responses_responses = _interopRequireDefault(require("../../sche
 
 var _arrayMetoh = require("../../logic/arrayMetoh");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createExcel = require("../../logic/createExcel");
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+var _nodemon = require("nodemon");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -315,155 +317,43 @@ exports.getResponseTeacher = getResponseTeacher;
 
 var getAllTeacher = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
-    var teacher, teacherData, totalItem, _iterator4, _step4, item, arrayIds, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _value3, e, respuestas, results;
-
+    var teacherData, totalItem, totalStudents, dataArr, dataStuden, result, resultStruden;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            teacher = req.body.teacher;
-            _context2.next = 3;
-            return _respuestas["default"].find({
-              docente: {
-                '$in': teacher
-              }
-            });
+            _context2.next = 2;
+            return _respuestas["default"].find({});
 
-          case 3:
+          case 2:
             teacherData = _context2.sent;
             totalItem = [];
-
-            if (!teacherData) {
-              _context2.next = 60;
-              break;
-            }
-
-            _iterator4 = _createForOfIteratorHelper(teacherData);
-            _context2.prev = 7;
-
-            _iterator4.s();
-
-          case 9:
-            if ((_step4 = _iterator4.n()).done) {
-              _context2.next = 52;
-              break;
-            }
-
-            item = _step4.value;
-            arrayIds = [];
-            _iteratorNormalCompletion3 = true;
-            _didIteratorError3 = false;
-            _context2.prev = 14;
-            _iterator3 = _asyncIterator(item.respuestas);
-
-          case 16:
-            _context2.next = 18;
-            return _iterator3.next();
-
-          case 18:
-            _step3 = _context2.sent;
-            _iteratorNormalCompletion3 = _step3.done;
-            _context2.next = 22;
-            return _step3.value;
-
-          case 22:
-            _value3 = _context2.sent;
-
-            if (_iteratorNormalCompletion3) {
-              _context2.next = 29;
-              break;
-            }
-
-            e = _value3;
-            arrayIds.push(e.ref);
-
-          case 26:
-            _iteratorNormalCompletion3 = true;
-            _context2.next = 16;
-            break;
-
-          case 29:
-            _context2.next = 35;
-            break;
-
-          case 31:
-            _context2.prev = 31;
-            _context2.t0 = _context2["catch"](14);
-            _didIteratorError3 = true;
-            _iteratorError3 = _context2.t0;
-
-          case 35:
-            _context2.prev = 35;
-            _context2.prev = 36;
-
-            if (!(!_iteratorNormalCompletion3 && _iterator3["return"] != null)) {
-              _context2.next = 40;
-              break;
-            }
-
-            _context2.next = 40;
-            return _iterator3["return"]();
-
-          case 40:
-            _context2.prev = 40;
-
-            if (!_didIteratorError3) {
-              _context2.next = 43;
-              break;
-            }
-
-            throw _iteratorError3;
-
-          case 43:
-            return _context2.finish(40);
-
-          case 44:
-            return _context2.finish(35);
-
-          case 45:
-            _context2.next = 47;
-            return _components_responses_responses["default"].find({
-              "_id": {
-                $in: arrayIds
+            totalStudents = [];
+            teacherData.map(function (i) {
+              totalItem.push(i.docente);
+              totalStudents.push(i.estudiante);
+            });
+            dataArr = new Set(totalItem);
+            dataStuden = new Set(totalStudents);
+            result = _toConsumableArray(dataArr);
+            resultStruden = _toConsumableArray(dataStuden);
+            res.status(200).json({
+              totalTeacher: {
+                list: result,
+                total: result.length
+              },
+              totalStudent: {
+                list: resultStruden,
+                total: resultStruden.length
               }
             });
 
-          case 47:
-            respuestas = _context2.sent;
-            item.respuestas = respuestas;
-            totalItem.push(item.docente);
-
-          case 50:
-            _context2.next = 9;
-            break;
-
-          case 52:
-            _context2.next = 57;
-            break;
-
-          case 54:
-            _context2.prev = 54;
-            _context2.t1 = _context2["catch"](7);
-
-            _iterator4.e(_context2.t1);
-
-          case 57:
-            _context2.prev = 57;
-
-            _iterator4.f();
-
-            return _context2.finish(57);
-
-          case 60:
-            results = (0, _arrayMetoh.deleteDuplicate)(totalItem);
-            res.status(200).json(results);
-
-          case 62:
+          case 11:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[7, 54, 57, 60], [14, 31, 35, 45], [36,, 40, 44]]);
+    }, _callee2);
   }));
 
   return function getAllTeacher(_x3, _x4) {
@@ -472,3 +362,72 @@ var getAllTeacher = /*#__PURE__*/function () {
 }();
 
 exports.getAllTeacher = getAllTeacher;
+
+var getFiltersTeachers = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
+    var dataBody, objQuer, data;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            dataBody = req.body;
+            objQuer = {};
+            Object.keys(dataBody).map(function (i) {
+              objQuer[i] = dataBody[i].replaceAll(' ', '-');
+            });
+            _context3.next = 6;
+            return _respuestas["default"].find(objQuer);
+
+          case 6:
+            data = _context3.sent;
+            res.status(200).json(data);
+            _context3.next = 14;
+            break;
+
+          case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](0);
+            '';
+            res.status(400).send(_context3.t0);
+
+          case 14:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 10]]);
+  }));
+
+  return function getFiltersTeachers(_x5, _x6) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+
+exports.getFiltersTeachers = getFiltersTeachers;
+
+var exportData = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            (0, _createExcel.createExcel)();
+            res.status(200).json({
+              data: '1233'
+            });
+
+          case 2:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+
+  return function exportData(_x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+exports.exportData = exportData;

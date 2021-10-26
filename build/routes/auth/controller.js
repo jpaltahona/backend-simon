@@ -24,24 +24,23 @@ var login = /*#__PURE__*/function () {
 
           case 3:
             dataResponse = _context.sent;
-            console.log(dataResponse);
             res.json(dataResponse);
-            _context.next = 11;
+            _context.next = 10;
             break;
 
-          case 8:
-            _context.prev = 8;
+          case 7:
+            _context.prev = 7;
             _context.t0 = _context["catch"](0);
             res.status(400).json({
               error: _context.t0
             });
 
-          case 11:
+          case 10:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 8]]);
+    }, _callee, null, [[0, 7]]);
   }));
 
   return function login(_x, _x2) {
