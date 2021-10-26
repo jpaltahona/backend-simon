@@ -149,10 +149,18 @@ export const getFiltersTeachers = async(req, res) => {
 } 
 
 export const exportData = async(req, res) => {
-  createExcel();
+  
+  try {
+    const data = req.body;
+    await createExcel(data);
 
-  res.status(200).json({
-    data: '1233'
-  });
+    res.status(200).json({
+      url: '/Excel.xlsx',
+    });
+    
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("error")
+  }
   
 }
