@@ -30,7 +30,14 @@ const getDuplicateElement = (array) => {
       filteredCategories.push({
         [item.pregunta]: functionsCall(arrCall)
       })
-    }else if( item.type == "question.chips" ){
+    }else if(item.type == "question.select-questions"){
+      filteredCategories.push(
+        {
+          interes: item.respuesta
+        }
+      )
+    }
+    else if( item.type == "question.chips" ){
       const arrayRepetidos = array.filter(i => i.pregunta == item.pregunta );
 
       let arrayChips = arrayRepetidos.map( elemtn => elemtn.respuesta.split(",") );
